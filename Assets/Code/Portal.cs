@@ -29,7 +29,7 @@ public class Portal : MonoBehaviour
         
     }
 
-    public bool IsValidPoint(Vector3 StartPos, Vector3 Forward, float MaxDist, LayerMask PortalLayerMask, out Vector3 Position, out Vector3 Normal)
+    public bool IsValidPos(Vector3 StartPos, Vector3 Forward, float MaxDist, LayerMask PortalLayerMask, out Vector3 Position, out Vector3 Normal)
     {
         Ray l_Ray = new Ray(StartPos, Forward);
         RaycastHit l_RayCastHit;
@@ -44,6 +44,8 @@ public class Portal : MonoBehaviour
                 IsValid = true;
                 Position = l_RayCastHit.point;
                 Normal = l_RayCastHit.normal;
+                transform.position = Position;
+                transform.rotation = Quaternion.LookRotation(Normal);
 
                 for (int i = 0; i < ValidPoints.Count; ++i)
                 {

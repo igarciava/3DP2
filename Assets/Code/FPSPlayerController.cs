@@ -36,8 +36,10 @@ public class FPSPlayerController : MonoBehaviour
     bool m_OnGround = true;
 
     public float m_JumpSpeed = 10.0f;
-    
 
+    [Header("Portales")]
+    public Portal BluePortal;
+    public Portal OrangePortal;
 
     public KeyCode m_DebugLockAngleKeyCode = KeyCode.I;
     public KeyCode m_DebugLockKeyCode = KeyCode.O;
@@ -173,35 +175,29 @@ public class FPSPlayerController : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0))
         {
-            Shoot();
+            Shoot(BluePortal);
+        }
+        if(Input.GetMouseButtonDown(1))
+        {
+            Shoot(OrangePortal);
         }
         
     }
     
 
-    void Shoot()
+    void Shoot(Portal _Portal)
     {
-        Ray l_ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f));
-        RaycastHit l_RaycastHit;
-        if(Physics.Raycast(l_ray, out l_RaycastHit, m_MaxShootDistance, m_ShootingLayerMask.value))
+        Vector3 l_Pos;
+        Vector3 l_Normal;
+
+        if (_Portal.IsValidPos(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Pos, out l_Normal))
         {
-            if (l_RaycastHit.collider.tag == "DroneCollider")
-            {
-                
-            }
-            if (l_RaycastHit.collider.tag == "Target")
-            {
-                
-            }
-            else if(l_RaycastHit.collider.tag == "SmallTarget")
-            {
-                
-            }
-            
-            
+            _Portal.gameObject.SetActive(true);
         }
-
-
+        else
+        {
+            _Portal.gameObject.SetActive(false);
+        }
     }   
 
     void Kill()
