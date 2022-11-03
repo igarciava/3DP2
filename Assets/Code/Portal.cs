@@ -57,6 +57,7 @@ public class Portal : MonoBehaviour
                         if (l_RayCastHit.collider.tag == "PortalWall")
                         {
                             float l_Distance = Vector3.Distance(Position, l_RayCastHit.point);
+                            Debug.Log("dist" + l_Distance);
                             float l_DotAngle = Vector3.Dot(Normal, l_RayCastHit.normal);
                             if (!(l_Distance >= MinValidDistance && l_Distance <= MaxValidDistance && l_DotAngle > MinDotValidAngle))
                             {

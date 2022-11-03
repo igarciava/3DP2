@@ -48,22 +48,10 @@ public class FPSPlayerController : MonoBehaviour
 
     Vector3 m_StartPosition;
     Quaternion m_StartRotation;
-    public Slider m_HealthSlider;
-    public Slider m_ShieldSlider;
 
     [Header("Shoot")]
     public float m_MaxShootDistance = 50.0f;
     public LayerMask m_ShootingLayerMask;
-
-
-    [Header("Life")]
-    public float m_Life;
-    float m_MaxLife = 1.0f;
-    public float m_Shield;
-    float m_MaxShield = 1.0f;
-    public float m_DroneDamage;
-    public float m_CurrentHealth;
-    public float m_CurrentShield;
 
     [Header("HUD")]
     public Canvas HUD;
@@ -73,14 +61,14 @@ public class FPSPlayerController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log(m_Life);
         m_Yaw = transform.rotation.y;
         m_Pitch = m_PitchController.localRotation.x;
         Cursor.lockState = CursorLockMode.Locked;
         m_AimLocked = Cursor.lockState == CursorLockMode.Locked;
         m_StartPosition = transform.position;
         m_StartRotation = transform.rotation;
-        
+        BluePortal.gameObject.SetActive(false);
+        OrangePortal.gameObject.SetActive(false);
     }
 
 #if UNITY_EDITOR
@@ -200,14 +188,8 @@ public class FPSPlayerController : MonoBehaviour
         }
     }   
 
-    void Kill()
-    {
-        m_Life = 0.0f;
-        //GameController.GetGameController().RestartGame();
-    }
     public void RestartGame()
     {
-        m_Life = 1.0f;
         m_CharacterController.enabled = false;
         transform.position = m_StartPosition;
         transform.rotation = m_StartRotation;
