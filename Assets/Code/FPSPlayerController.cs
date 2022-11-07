@@ -92,9 +92,8 @@ public class FPSPlayerController : MonoBehaviour
     void UpdateInputDebug()
     {
         if (Input.GetKeyDown(m_DebugLockAngleKeyCode))
-            m_AngleLocked = !m_AngleLocked;
-        if (Input.GetKeyDown(m_DebugLockKeyCode))
         {
+            m_AngleLocked = !m_AngleLocked;
             if (Cursor.lockState == CursorLockMode.Locked)
                     Cursor.lockState = CursorLockMode.None;
             else
