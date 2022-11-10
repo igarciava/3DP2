@@ -30,6 +30,7 @@ public class FPSPlayerController : MonoBehaviour
     KeyCode m_DownKeyCode = KeyCode.S;
     KeyCode m_JumpKeyCode = KeyCode.Space;
     KeyCode m_RunKeycode = KeyCode.LeftShift;
+    KeyCode m_RestartGameKeyCode = KeyCode.R;
 
     public Camera m_Camera;
     public float m_NormalMovementFOV = 60;
@@ -45,7 +46,6 @@ public class FPSPlayerController : MonoBehaviour
     public Portal OrangePortal;
 
     public KeyCode m_DebugLockAngleKeyCode = KeyCode.I;
-    public KeyCode m_DebugLockKeyCode = KeyCode.O;
     bool m_AngleLocked = false;
     bool m_AimLocked = true;
 
@@ -128,6 +128,8 @@ public class FPSPlayerController : MonoBehaviour
             Direction -= l_RightDirection;
         if (Input.GetKeyDown(m_JumpKeyCode) && m_OnGround)
             m_VerticalSpeed = m_JumpSpeed;
+        if (Input.GetKeyDown(m_RestartGameKeyCode))
+            RestartGame();
         float l_FOV = m_NormalMovementFOV;
         if (Input.GetKey(m_RunKeycode))
         {
@@ -300,11 +302,15 @@ public class FPSPlayerController : MonoBehaviour
         m_CharacterController.enabled = true;
     }
 
+    public void Die()
+    {
+
+    }
     public void RestartGame()
     {
         m_CharacterController.enabled = false;
         transform.position = m_StartPosition;
         transform.rotation = m_StartRotation;
         m_CharacterController.enabled = true;
-    }   
+    }
 }
