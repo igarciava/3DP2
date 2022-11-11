@@ -5,14 +5,18 @@ TagManager:
   serializedVersion: 2
   tags:
   - PortalWall
+  - Portal
+  - CompanionCube
+  - Cube
+  - RefractionCube
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - PortalLayer
   - Water
   - UI
-  - 
+  - CompanionCube
   - 
   - 
   - 

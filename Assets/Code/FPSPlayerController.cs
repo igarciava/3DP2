@@ -21,12 +21,16 @@ public class FPSPlayerController : MonoBehaviour
     public CharacterController m_CharacterController;
     public float m_Speed;
     public float m_FastSpeedMultiplier = 3f;
+
+    Vector3 Direction;
+
     KeyCode m_LeftKeyCode = KeyCode.A;
     KeyCode m_RightKeyCode = KeyCode.D;
     KeyCode m_UpKeyCode = KeyCode.W;
     KeyCode m_DownKeyCode = KeyCode.S;
     KeyCode m_JumpKeyCode = KeyCode.Space;
     KeyCode m_RunKeycode = KeyCode.LeftShift;
+    KeyCode m_RestartGameKeyCode = KeyCode.R;
 
     public Camera m_Camera;
     public float m_NormalMovementFOV = 60;
@@ -42,12 +46,25 @@ public class FPSPlayerController : MonoBehaviour
     public Portal OrangePortal;
 
     public KeyCode m_DebugLockAngleKeyCode = KeyCode.I;
-    public KeyCode m_DebugLockKeyCode = KeyCode.O;
     bool m_AngleLocked = false;
     bool m_AimLocked = true;
 
     Vector3 m_StartPosition;
     Quaternion m_StartRotation;
+
+    public float OffsetTeleportPortal;
+    [Range(0.0f, 90.0f)]public float AngleToEnterPortalInDegrees;
+
+    [Header("AttachObject")]
+    public Transform AttachingPosition;
+    Rigidbody ObjectAttached;
+    bool AttachingObject = false;
+    public float AttachingObjectSpeed = 3.0f;
+    Quaternion AttachingObjectStartRotation;
+    public float MaxDistanceToAttachObject = 10.0f;
+    public LayerMask AttachObjectLayerMask;
+    KeyCode AttachObjectKeyCode = KeyCode.E;
+    public float AttachedObjectThrowForce = 750.0f;
 
     [Header("Shoot")]
     public float m_MaxShootDistance = 50.0f;
@@ -75,9 +92,8 @@ public class FPSPlayerController : MonoBehaviour
     void UpdateInputDebug()
     {
         if (Input.GetKeyDown(m_DebugLockAngleKeyCode))
-            m_AngleLocked = !m_AngleLocked;
-        if (Input.GetKeyDown(m_DebugLockKeyCode))
         {
+            m_AngleLocked = !m_AngleLocked;
             if (Cursor.lockState == CursorLockMode.Locked)
                     Cursor.lockState = CursorLockMode.None;
             else
@@ -99,19 +115,21 @@ public class FPSPlayerController : MonoBehaviour
         //Debug.Log(m_Shield);
         Vector3 l_RightDirection = transform.right;
         Vector3 l_ForwardDirection = transform.forward;
-        Vector3 l_Direction = Vector3.zero;
+        Direction = Vector3.zero;
         float l_Speed = m_Speed;
 
         if(Input.GetKey(m_UpKeyCode))
-            l_Direction = l_ForwardDirection;
+            Direction = l_ForwardDirection;
         if (Input.GetKey(m_DownKeyCode))
-            l_Direction = -l_ForwardDirection;
+            Direction = -l_ForwardDirection;
         if (Input.GetKey(m_RightKeyCode))
-            l_Direction += l_RightDirection;
+            Direction += l_RightDirection;
         if (Input.GetKey(m_LeftKeyCode))
-            l_Direction -= l_RightDirection;
+            Direction -= l_RightDirection;
         if (Input.GetKeyDown(m_JumpKeyCode) && m_OnGround)
             m_VerticalSpeed = m_JumpSpeed;
+        if (Input.GetKeyDown(m_RestartGameKeyCode))
+            RestartGame();
         float l_FOV = m_NormalMovementFOV;
         if (Input.GetKey(m_RunKeycode))
         {
@@ -120,8 +138,8 @@ public class FPSPlayerController : MonoBehaviour
         }
         m_Camera.fieldOfView = l_FOV;
 
-        l_Direction.Normalize();
-        Vector3 l_Movement = l_Direction * l_Speed * Time.deltaTime;
+        Direction.Normalize();
+        Vector3 l_Movement = Direction * l_Speed * Time.deltaTime;
 
         //Rotation
         float l_MouseX = Input.GetAxis("Mouse X");
@@ -161,18 +179,89 @@ public class FPSPlayerController : MonoBehaviour
             m_OnGround = false;
         }
 
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(AttachObjectKeyCode) && CanAttachObject())
+            AttachObject();
+        if(ObjectAttached && !AttachingObject)
         {
-            Shoot(BluePortal);
+            if(Input.GetMouseButtonDown(0))
+            {
+                ThrowAttachedObject(AttachedObjectThrowForce);
+            }
+            if(Input.GetMouseButtonDown(1))
+            {
+                ThrowAttachedObject(0.0f);
+            }
         }
-        if(Input.GetMouseButtonDown(1))
+        else if(!AttachingObject)
         {
-            Shoot(OrangePortal);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Shoot(BluePortal);
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                Shoot(OrangePortal);
+            }
         }
+
+        if (AttachingObject)
+            UpdateAttachObject();
         
     }
-    
+    bool CanAttachObject()
+    {
+        return ObjectAttached == null;
+    }
 
+    void AttachObject()
+    {
+        Debug.Log("hola");
+        Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        RaycastHit l_RaycastHit;
+        if(Physics.Raycast(l_Ray, out l_RaycastHit, MaxDistanceToAttachObject, AttachObjectLayerMask.value))
+        {
+            if(l_RaycastHit.collider.tag == "CompanionCube")
+            {
+                AttachingObject = true;
+                ObjectAttached = l_RaycastHit.collider.GetComponent<Rigidbody>();
+                ObjectAttached.GetComponent<CompanionScript>().SetAttached(true);
+                ObjectAttached.isKinematic = true;
+                AttachingObjectStartRotation = l_RaycastHit.collider.transform.rotation;
+            }
+        }
+    }
+    void ThrowAttachedObject(float Force)
+    {
+        if(ObjectAttached != null)
+        {
+            ObjectAttached.transform.SetParent(null);
+            ObjectAttached.isKinematic = false;
+            ObjectAttached.AddForce(m_PitchController.forward * Force);
+            ObjectAttached.GetComponent<CompanionScript>().SetAttached(false);
+            ObjectAttached = null;
+        }
+    }
+    void UpdateAttachObject()
+    {
+        Vector3 l_EulerAngles = AttachingPosition.rotation.eulerAngles;
+        Vector3 l_Direction = AttachingPosition.transform.position - ObjectAttached.transform.position;
+        float l_Distance = l_Direction.magnitude;
+        float l_Movement = AttachingObjectSpeed * Time.deltaTime;
+        if(l_Movement >= l_Distance)
+        {
+            AttachingObject = false;
+            ObjectAttached.transform.SetParent(AttachingPosition);
+            ObjectAttached.transform.localPosition = Vector3.zero;
+            ObjectAttached.transform.localRotation = Quaternion.identity;
+        }
+        else
+        {
+            l_Direction /= l_Distance;
+            ObjectAttached.MovePosition(ObjectAttached.transform.position + l_Direction * l_Movement);
+            ObjectAttached.MoveRotation(Quaternion.Lerp(AttachingObjectStartRotation, 
+                Quaternion.Euler(0.0f, l_EulerAngles.y, l_EulerAngles.z), 1.0f - Mathf.Min(l_Distance / 1.5f, 1.0f)));
+        }
+    }
     void Shoot(Portal _Portal)
     {
         Vector3 l_Pos;
@@ -186,13 +275,42 @@ public class FPSPlayerController : MonoBehaviour
         {
             _Portal.gameObject.SetActive(false);
         }
-    }   
+    }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Portal")
+        {
+            Debug.Log("es");
+            Portal l_Portal = other.GetComponent<Portal>();
+            if(Vector3.Dot(l_Portal.transform.forward, -Direction)>Mathf.Cos(AngleToEnterPortalInDegrees * Mathf.Deg2Rad))
+                Teleport(l_Portal);
+        }
+    }
+
+    void Teleport(Portal thePortal)
+    {
+        Vector3 l_LocalPos = thePortal.OtherPortalTransform.InverseTransformPoint(transform.position);
+        Vector3 l_LocalDir = thePortal.OtherPortalTransform.transform.InverseTransformDirection(transform.forward);
+        Vector3 l_LocalDirMovement = thePortal.OtherPortalTransform.transform.InverseTransformDirection(Direction);
+        Vector3 l_WorldDirMovement = thePortal.MirrorPortal.transform.TransformDirection(l_LocalDirMovement);
+
+        m_CharacterController.enabled = false;
+        transform.forward = thePortal.MirrorPortal.transform.TransformDirection(l_LocalDir);
+        m_Yaw = transform.rotation.eulerAngles.y;
+        transform.position = thePortal.MirrorPortal.transform.TransformPoint(l_LocalPos) + l_WorldDirMovement * OffsetTeleportPortal;
+        m_CharacterController.enabled = true;
+    }
+
+    public void Die()
+    {
+
+    }
     public void RestartGame()
     {
         m_CharacterController.enabled = false;
         transform.position = m_StartPosition;
         transform.rotation = m_StartRotation;
         m_CharacterController.enabled = true;
-    }   
+    }
 }
