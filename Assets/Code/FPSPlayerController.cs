@@ -1,11 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class FPSPlayerController : MonoBehaviour
 {
+ 
+
     float m_Yaw;
     float m_Pitch;
     public float m_YawRotationalSpeed;
@@ -86,6 +85,7 @@ public class FPSPlayerController : MonoBehaviour
         m_StartRotation = transform.rotation;
         BluePortal.gameObject.SetActive(false);
         OrangePortal.gameObject.SetActive(false);
+       
     }
 
 #if UNITY_EDITOR
@@ -304,7 +304,7 @@ public class FPSPlayerController : MonoBehaviour
 
     public void Die()
     {
-
+        SceneManager.LoadScene("GameOver");
     }
     public void RestartGame()
     {
