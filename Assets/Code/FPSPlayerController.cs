@@ -43,6 +43,7 @@ public class FPSPlayerController : MonoBehaviour
     [Header("Portales")]
     public Portal BluePortal;
     public Portal OrangePortal;
+    public DecallPortal DecallPortal;
 
     public KeyCode m_DebugLockAngleKeyCode = KeyCode.I;
     bool m_AngleLocked = false;
@@ -85,7 +86,7 @@ public class FPSPlayerController : MonoBehaviour
         m_StartRotation = transform.rotation;
         BluePortal.gameObject.SetActive(false);
         OrangePortal.gameObject.SetActive(false);
-       
+        DecallPortal.gameObject.SetActive(false);
     }
 
 #if UNITY_EDITOR
@@ -194,19 +195,28 @@ public class FPSPlayerController : MonoBehaviour
         }
         else if(!AttachingObject)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButton(0))
             {
+                ShootDecall(DecallPortal);
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                DecallPortal.gameObject.SetActive(false);
                 Shoot(BluePortal);
             }
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButton(1))
             {
+                ShootDecall(DecallPortal);
+            }
+            if (Input.GetMouseButtonUp(1))
+            {
+                DecallPortal.gameObject.SetActive(false);
                 Shoot(OrangePortal);
             }
         }
 
         if (AttachingObject)
             UpdateAttachObject();
-        
     }
     bool CanAttachObject()
     {
@@ -220,7 +230,7 @@ public class FPSPlayerController : MonoBehaviour
         RaycastHit l_RaycastHit;
         if(Physics.Raycast(l_Ray, out l_RaycastHit, MaxDistanceToAttachObject, AttachObjectLayerMask.value))
         {
-            if(l_RaycastHit.collider.tag == "CompanionCube")
+            if(l_RaycastHit.collider.tag == "CompanionCube" || l_RaycastHit.collider.tag == "RefractionCube")
             {
                 AttachingObject = true;
                 ObjectAttached = l_RaycastHit.collider.GetComponent<Rigidbody>();
@@ -274,6 +284,21 @@ public class FPSPlayerController : MonoBehaviour
         else
         {
             _Portal.gameObject.SetActive(false);
+        }
+    }
+
+    void ShootDecall(DecallPortal _DecallPortal)
+    {
+        Vector3 l_Pos;
+        Vector3 l_Normal;
+
+        if (_DecallPortal.IsValidPos(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Pos, out l_Normal))
+        {
+            _DecallPortal.gameObject.SetActive(true);
+        }
+        else
+        {
+            _DecallPortal.gameObject.SetActive(false);
         }
     }
 

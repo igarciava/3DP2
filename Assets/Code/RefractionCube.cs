@@ -26,8 +26,11 @@ public class RefractionCube : MonoBehaviour
             l_LaserDistance = Vector3.Distance(Laser.transform.position, l_RayCastHit.point);
             if (l_RayCastHit.collider.tag == "RefractionCube")
             {
-                Debug.Log("si");
-                l_RayCastHit.collider.GetComponent<RefractionCube>();
+                l_RayCastHit.collider.GetComponent<RefractionCube>().CreateRefraction();
+            }
+            if (l_RayCastHit.collider.tag == "Player")
+            {
+                l_RayCastHit.collider.GetComponent<FPSPlayerController>().Die();
             }
         }
         Laser.SetPosition(1, new Vector3(0.0f, 0.0f, l_LaserDistance));

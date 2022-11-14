@@ -9,8 +9,9 @@ public class PortalButton : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag =="Player" || other.tag=="CompanionCube")
+        if(other.tag =="Player" || other.tag=="CompanionCube" || other.tag == "Laser")
         {
+            Debug.Log("abre");
             Action.Invoke();
         }
     }

@@ -9,6 +9,8 @@ TagManager:
   - CompanionCube
   - Cube
   - RefractionCube
+  - DeadZone
+  - Laser
   layers:
   - Default
   - TransparentFX
