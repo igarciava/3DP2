@@ -11,6 +11,7 @@ TagManager:
   - RefractionCube
   - DeadZone
   - Laser
+  - Button
   layers:
   - Default
   - TransparentFX

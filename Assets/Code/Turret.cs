@@ -28,6 +28,10 @@ public class Turret : MonoBehaviour
                 {
                     l_RayCastHit.collider.GetComponent<FPSPlayerController>().Die();
                 }
+                if (l_RayCastHit.collider.tag == "Button")
+                {
+                    l_RayCastHit.collider.GetComponent<PortalButton>().DoAction();
+                }
             }
             Laser.SetPosition(1, new Vector3(0.0f, 0.0f, l_LaserDistance));
         }

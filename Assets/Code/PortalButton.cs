@@ -15,4 +15,9 @@ public class PortalButton : MonoBehaviour
             Action.Invoke();
         }
     }
+    public void DoAction()
+    {
+        Debug.Log("action");
+        Action.Invoke();
+    }
 }

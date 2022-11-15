@@ -1626,7 +1626,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6547639719020336650, guid: 8eb1afb5cbfb1614ba4b6645fb1afc81, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9998902
+      value: 0.99998254
       objectReference: {fileID: 0}
     - target: {fileID: 6547639719020336650, guid: 8eb1afb5cbfb1614ba4b6645fb1afc81, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1634,7 +1634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6547639719020336650, guid: 8eb1afb5cbfb1614ba4b6645fb1afc81, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.014817363
+      value: -0.0059209894
       objectReference: {fileID: 0}
     - target: {fileID: 6547639719020336650, guid: 8eb1afb5cbfb1614ba4b6645fb1afc81, type: 3}
       propertyPath: m_LocalRotation.z
@@ -1646,7 +1646,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6547639719020336650, guid: 8eb1afb5cbfb1614ba4b6645fb1afc81, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -1.698
+      value: -0.678
       objectReference: {fileID: 0}
     - target: {fileID: 6547639719020336650, guid: 8eb1afb5cbfb1614ba4b6645fb1afc81, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -7826,7 +7826,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848231056}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 65.39961, y: 23.52416, z: 66.84156}
@@ -8934,7 +8934,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 535f93f96c4d86442bf381db3b127704, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 535f93f96c4d86442bf381db3b127704, type: 3}
