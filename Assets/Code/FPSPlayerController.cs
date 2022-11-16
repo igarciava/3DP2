@@ -288,6 +288,9 @@ public class FPSPlayerController : MonoBehaviour
         Vector3 l_Pos;
         Vector3 l_Normal;
 
+        _Portal.gameObject.transform.localScale = DecallPortal.gameObject.transform.localScale;
+
+
         if (_Portal.IsValidPos(m_Camera.transform.position, m_Camera.transform.forward, m_MaxShootDistance, m_ShootingLayerMask, out l_Pos, out l_Normal))
         {
             _Portal.gameObject.SetActive(true);
