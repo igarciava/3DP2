@@ -37,7 +37,12 @@ public class Portal : MonoBehaviour
         Position = Vector3.zero;
         Normal = Vector3.forward;
 
-        if(Physics.Raycast(l_Ray, out l_RayCastHit, MaxDist, PortalLayerMask.value))
+        float l_MinValidDistance = MinValidDistance * transform.localScale.x;
+        float l_MaxValidDistance = MaxValidDistance * transform.localScale.y;
+        Debug.Log(l_MinValidDistance+"iiiii");
+        Debug.Log(l_MaxValidDistance);
+
+        if (Physics.Raycast(l_Ray, out l_RayCastHit, MaxDist, PortalLayerMask.value))
         {
             if(l_RayCastHit.collider.tag == "PortalWall")
             {
@@ -59,7 +64,7 @@ public class Portal : MonoBehaviour
                             float l_Distance = Vector3.Distance(Position, l_RayCastHit.point);
                             Debug.Log("dist" + l_Distance);
                             float l_DotAngle = Vector3.Dot(Normal, l_RayCastHit.normal);
-                            if (!(l_Distance >= MinValidDistance && l_Distance <= MaxValidDistance && l_DotAngle > MinDotValidAngle))
+                            if (!(l_Distance >= l_MinValidDistance && l_Distance <= l_MaxValidDistance && l_DotAngle > MinDotValidAngle))
                             {
                                 IsValid = false;
                             }
