@@ -306,10 +306,13 @@ public class FPSPlayerController : MonoBehaviour
     {
         if (other.tag == "Portal")
         {
-            Debug.Log("es");
             Portal l_Portal = other.GetComponent<Portal>();
             if(Vector3.Dot(l_Portal.transform.forward, -Direction)>Mathf.Cos(AngleToEnterPortalInDegrees * Mathf.Deg2Rad))
                 Teleport(l_Portal);
+        }
+        if (other.tag == "DeadZone")
+        {
+            Die();
         }
     }
 
