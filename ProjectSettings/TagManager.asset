@@ -12,6 +12,7 @@ TagManager:
   - DeadZone
   - Laser
   - Button
+  - Turret
   layers:
   - Default
   - TransparentFX
