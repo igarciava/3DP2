@@ -12,6 +12,7 @@ public class FPSPlayerController : MonoBehaviour
 
     public float m_MinPitch;
     public float m_MaxPitch;
+    public int m_PortalSize=1;
 
     public Transform m_PitchController;
     public bool m_UseYawInverted;
@@ -195,6 +196,16 @@ public class FPSPlayerController : MonoBehaviour
         }
         else if(!AttachingObject)
         {
+            if(Input.mouseScrollDelta.y > 0.0f && m_PortalSize < 2)
+            {
+                DecallPortal.transform.localScale = new Vector3(DecallPortal.transform.localScale.x / 0.5f, DecallPortal.transform.localScale.y / 0.5f, DecallPortal.transform.localScale.z);
+                m_PortalSize++; 
+            }
+            else if (Input.mouseScrollDelta.y < 0.0f && m_PortalSize > 0)
+            {
+                DecallPortal.transform.localScale = new Vector3(DecallPortal.transform.localScale.x * 0.5f, DecallPortal.transform.localScale.y * 0.5f, DecallPortal.transform.localScale.z);
+                m_PortalSize--;
+            }
             if (Input.GetMouseButton(0))
             {
                 ShootDecall(DecallPortal);

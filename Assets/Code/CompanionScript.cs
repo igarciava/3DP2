@@ -50,6 +50,8 @@ public class CompanionScript : MonoBehaviour
 
         Vector3 l_WorldVelocity = thePortal.MirrorPortal.transform.TransformDirection(l_LocalVelocity);
 
+        transform.localScale *= (thePortal.MirrorPortal.transform.localScale.x / thePortal.transform.localScale.x);
+
         Rigidbody.isKinematic = true;
         transform.forward = thePortal.MirrorPortal.transform.TransformDirection(l_LocalDir);
         Vector3 l_WorldVelocityNormalized = l_WorldVelocity.normalized;
