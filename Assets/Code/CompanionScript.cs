@@ -60,5 +60,10 @@ public class CompanionScript : MonoBehaviour
         Rigidbody.isKinematic = false;
         Rigidbody.velocity = l_WorldVelocity;
         ExitPortal = thePortal.MirrorPortal;
+
+        if (transform.localScale.x > 2.0f)
+            transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
+        else if (transform.localScale.x < 0.5f)
+            transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
     }
 }
